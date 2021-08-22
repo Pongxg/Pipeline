@@ -34,4 +34,4 @@ private:
 
 	std::vector<std::string> m_vecFullFileName;
 };
-#define gMaxContext MaxContext::GetInstance() 
+#define gPipelineInstance PipelineManager::GetInstance() 
