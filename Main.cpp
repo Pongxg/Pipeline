@@ -3,9 +3,8 @@
 #include "PipelineManager.h"
 
 int main(int argc, char* argv[]) {
-    std::string path = "pipeline";
     gPipelineInstance->Init();
-    gPipelineInstance->ReadPath(path);
+    gPipelineInstance->ReadPath("D:/InstallSource/Pipeline/bin/pipeline/");
     gPipelineInstance->GenPipeline();
     gPipelineInstance->WriteReport();
     return 0;

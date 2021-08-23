@@ -1,8 +1,9 @@
 #pragma once
 #include "Singleton.h"
 #include <map>
-#include <string>
 #include <vector>
+#include "Util.h"
+#include "TaskNode.h"
 
 class Pipeline;
 typedef struct _task_node
@@ -16,22 +17,42 @@ typedef struct _task_node
 class PipelineManager :public Singleton<PipelineManager>
 {
 public:
+
 	PipelineManager();
 	~PipelineManager();
 
 	bool Init();
 
-	bool ReadPath(std::string& filePath);
+	bool ReadPath(const char* _file_path);
 
 	bool GenPipeline();
 
-	bool WriteReport();
+	bool CreatePipeline(std::string  _file_path);
 
+	bool FindPipelinePath(std::string& _file_path);
+
+	bool WriteReport();
+	
+	TaskNode* CreateNode(std::string _node_type);
+
+	void Release();
+private:
+	bool FilterInit();
+
+	bool RegisterInit();
+
+	void RegisterNodeFunc(std::string node_type, NodeFunction);
+
+	void TraversePath(std::string _path);
 private:
 	std::map<std::string, Pipeline*> m_mapPipeline;
+
 	std::map<std::string,std::string>  m_mapKnowNode;
+
 	std::map<std::string, TASK_NODE> m_mapUnknowNode;
 
-	std::vector<std::string> m_vecFullFileName;
+	StrMap m_mapPipelineName;
+
+	std::unordered_map<std::string, NodeFunction>  m_nodeFuncMap;
 };
 #define gPipelineInstance PipelineManager::GetInstance() 
