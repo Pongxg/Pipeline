@@ -93,6 +93,7 @@ TaskNode* PipelineManager::CreateNode(std::string node_type)
 	return it->second();
 }
 
+
 void PipelineManager::Release()
 {
 	m_nodeFuncMap.clear();
@@ -164,7 +165,8 @@ void PipelineManager::TraversePath(std::string path)
 	const std::filesystem::path rootPath(path);
 	for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{ rootPath })
 		if (dir_entry.path().extension() == ".json") {
-			std::string fileName = dir_entry.path().filename().string();
+			std::string fileName = dir_entry.path().filename().replace_extension().string();
+
 			std::string filePath = dir_entry.path().string();
 			StrMapPair pairIter = m_mapPipelineName.insert(std::make_pair(fileName, filePath));
 			if (!pairIter.second)

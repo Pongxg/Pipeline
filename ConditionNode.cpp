@@ -23,3 +23,8 @@ bool ConditionNode::Execute()
 {
 	return true;
 }
+
+bool ConditionNode::WriterReport()
+{
+	return true;
+}

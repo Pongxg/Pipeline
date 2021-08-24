@@ -23,3 +23,8 @@ bool SimpleTaskNode::Execute()
 {
 	return true;
 }
+
+bool SimpleTaskNode::WriterReport()
+{
+	return true;
+}

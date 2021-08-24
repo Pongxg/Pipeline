@@ -23,3 +23,8 @@ bool MessageNode::Execute()
 {
 	return true;
 }
+
+bool MessageNode::WriterReport()
+{
+	return true;
+}

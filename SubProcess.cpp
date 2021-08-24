@@ -39,3 +39,8 @@ bool SubProcess::Execute()
 {
 	return true;
 }
+
+bool SubProcess::WriterReport()
+{
+	return true;
+}

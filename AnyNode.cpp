@@ -22,3 +22,8 @@ bool AnyNode::Execute()
 {
 	return true;
 }
+
+bool AnyNode::WriterReport()
+{
+	return true;
+}

@@ -7,8 +7,9 @@ public:
 	virtual ~TaskNode();
 	virtual bool Init(const nlohmann::json &json);
 	virtual bool Execute() = 0;
-
+    virtual bool WriterReport() = 0;
     bool AddChild(TaskNode* _node);
+    void SetName(std::string _node_name);
 
 public:
     std::string     id = "";
@@ -27,6 +28,8 @@ public:
     nlohmann::json  dag;
 
     std::vector<TaskNode*>m_vecChildList;
+
+    std::string   m_strNodeName = "";
 };
 
 typedef TaskNode* (*NodeFunction)(void);

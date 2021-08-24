@@ -50,3 +50,8 @@ bool TaskNode::AddChild(TaskNode* _node)
     m_vecChildList.push_back(_node);
     return true;
 }
+
+void TaskNode::SetName(std::string _node_name)
+{
+    m_strNodeName = _node_name;
+}
