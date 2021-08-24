@@ -30,6 +30,7 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
         }
         m_strName = json_dto["pipelineName"];
     
+    
         const nlohmann::json node = json_dto["node"];
         for (auto& elem : node)
         {
@@ -64,6 +65,12 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
         return false;
     }
 
+    return true;
+}
+
+
+bool Pipeline::WriteReport()
+{
     return true;
 }
 
@@ -107,3 +114,4 @@ bool Pipeline::DagConnect(const nlohmann::json _json)
     }
     return true;
 }
+

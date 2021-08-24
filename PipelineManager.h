@@ -27,9 +27,9 @@ public:
 
 	bool GenPipeline();
 
-	bool CreatePipeline(std::string  _file_path);
+	Pipeline* CreatePipeline(std::string  _file_path);
 
-	bool FindPipelinePath(std::string& _file_path);
+	bool FindPipelinePath(std::string& _file_name, std::string& _file_path);
 
 	bool WriteReport();
 	

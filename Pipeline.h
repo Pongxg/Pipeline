@@ -7,6 +7,7 @@ public:
 	Pipeline();
 	~Pipeline();
 	bool ParseFile(std::string m_strFilePath);
+	bool WriteReport();
 private:
 	bool DagConnect(const nlohmann::json _json);
 	

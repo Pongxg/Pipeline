@@ -36,6 +36,10 @@ bool TaskNode::Init(const nlohmann::json& _json)
             properties = it.value();
         if (it.key() == "propertiesMapping")
             propertiesMapping = it.value();
+        if (it.key() == "subPipeline")
+            subPipeline = it.value();
+        if (it.key() == "dag")
+            dag = it.value();
     }
 
 	return true;

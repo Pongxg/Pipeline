@@ -38,16 +38,16 @@ bool PipelineManager::GenPipeline()
 {
 	for(StrMapIter iter = m_mapPipelineName.begin();iter != m_mapPipelineName.end();++iter)
 	{
-		CreatePipeline(iter.second);
+		CreatePipeline(iter->second);
 	}
 	return true;
 }
 
 
-bool PipelineManager::CreatePipeline(std::string  _file_path)
+Pipeline* PipelineManager::CreatePipeline(std::string  _file_path)
 {
 	std::map<std::string, Pipeline*>::iterator  iter = m_mapPipeline.find(_file_path);
-	if (iter == m_mapPipeline.end())
+	if (iter != m_mapPipeline.end())
 	{
 		LOG(WARNING) << "CreatePipeline:: pipeline already exists:" << _file_path;
 		return false;
@@ -55,17 +55,30 @@ bool PipelineManager::CreatePipeline(std::string  _file_path)
 	Pipeline* pipeline = new Pipeline();
 	pipeline->ParseFile(_file_path);
 	m_mapPipeline[_file_path] = pipeline;
-	return true;
+	return pipeline;
 }
 
-bool PipelineManager::FindPipelinePath(std::string& _file_name)
+bool PipelineManager::FindPipelinePath(std::string& _file_name,std::string& _file_path)
 {
-
+	StrMapIter  iter = m_mapPipelineName.find(_file_name);
+	if (iter == m_mapPipelineName.end())
+	{
+		LOG(WARNING) << "FindPipelinePath:: _file_path non exists:" << _file_name;
+		return false;
+	}
+	_file_path = iter->second;
+	return true;
 }
 
 
 bool PipelineManager::WriteReport()
 {
+
+	std::map<std::string, Pipeline*>::iterator  iter = m_mapPipeline.begin();
+	for ( ;iter != m_mapPipeline.end();++iter)
+	{
+		iter->second->WriteReport(); 
+	}
 	return true;
 }
 
