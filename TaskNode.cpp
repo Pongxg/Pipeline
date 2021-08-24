@@ -55,3 +55,8 @@ void TaskNode::SetName(std::string _node_name)
 {
     m_strNodeName = _node_name;
 }
+
+std::string TaskNode::GetHandler()
+{
+    return m_strHandlerName;
+}

@@ -99,10 +99,23 @@ TaskNode* Pipeline::FindTaskNode(std::string& _dag_name)
     return NULL;
 }
 
+bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
+{
+    std::map<std::string, TaskNode*>::iterator  iter = m_mapTasks.find(name);
+    if (iter == m_mapTasks.end())
+    {
+        return false;
+    }
+    _handle_name = iter->GetHandler();;
+    return true;
+}
+
+
 
 
 bool Pipeline::WriteReport()
 {
+
     return true;
 }
 

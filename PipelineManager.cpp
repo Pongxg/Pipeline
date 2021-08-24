@@ -70,6 +70,49 @@ bool PipelineManager::FindPipelinePath(std::string& _file_name,std::string& _fil
 	return true;
 }
 
+Pipeline* PipelineManager::FindPipeline(std::string& _file_name)
+{
+	std::string filePath;
+	bool bFind = FindPipelinePath(_file_name, filePath);
+	if (!bFind)
+	{
+		LOG(WARNING) << "FindPipeline:: _file_path non exists:" << _file_name;
+		return NULL;
+	}
+	std::map<std::string, Pipeline*>::iterator  iter = m_mapPipeline.find(filePath);
+	if (iter == m_mapPipeline.end())
+	{
+		LOG(WARNING) << "FindPipeline:: pipeline non exists:" << filePath;
+		return NULL;
+	}
+	return iter->second;
+}
+
+bool PipelineManager::FindTaskNode(Pipeline* _pipeline, std::string& _task_handle, std::string& _dag_name)
+{
+	std::string::size_type pos;
+	pos = _dag_name.find("#");
+	int length = _dag_name.size();
+	if (pos != std::string::npos)
+	{
+		std::string pipelineName = _dag_name.substr(0, pos);
+		Pipeline* pipeline = gPipelineInstance->FindPipeline(pipelineName);
+		if (!pipeline)
+		{
+			LOG(ERROR) << "FindTaskNode:pipeline not find:" << pipelineName;
+			return false;
+		}
+		std::string dagName = _dag_name.substr(pos + 1, length);
+		return FindTaskNode(pipeline, _task_handle, dagName);
+	}
+	else
+	{
+		return _pipeline->FindNodeHandle(_dag_name, _task_handle);
+	}
+	return false;
+}
+
+
 
 bool PipelineManager::WriteReport()
 {

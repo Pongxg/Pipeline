@@ -10,6 +10,7 @@ public:
     virtual bool WriterReport() = 0;
     bool AddChild(TaskNode* _node);
     void SetName(std::string _node_name);
+    std::string GetHandler();
 
 public:
     std::string     id = "";
@@ -29,7 +30,8 @@ public:
 
     std::vector<TaskNode*>m_vecChildList;
 
-    std::string   m_strNodeName = "";
+    std::string  m_strNodeName = "";
+    std::string  m_strHandlerName = "";
 };
 
 typedef TaskNode* (*NodeFunction)(void);

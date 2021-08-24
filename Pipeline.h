@@ -8,6 +8,7 @@ public:
 	~Pipeline();
 	bool ParseFile(std::string m_strFilePath);
 	TaskNode* FindTaskNode(std::string& _dag_name);
+	bool FindNodeHandler(std::string name, std::string& _handle_name);
 	bool WriteReport();
 private:
 	bool DagConnect(const nlohmann::json _json);

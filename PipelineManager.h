@@ -31,6 +31,10 @@ public:
 
 	bool FindPipelinePath(std::string& _file_name, std::string& _file_path);
 
+	Pipeline* FindPipeline(std::string& _file_name);
+
+	bool FindTaskNode(Pipeline* _pipeline, std::string& _task_handle, std::string& _dag_name);
+
 	bool WriteReport();
 	
 	TaskNode* CreateNode(std::string _node_type);
