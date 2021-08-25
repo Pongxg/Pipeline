@@ -122,6 +122,7 @@ bool Pipeline::WriteReport()
     }
     std::string filename = m_strName + ".dot";
 
+
     std::ofstream outFile;
     outFile.open(filename.c_str(), std::ios::out);
 
@@ -134,7 +135,11 @@ bool Pipeline::WriteReport()
     m_pStartNode->WriterReport(outFile);
     outFile << "}\n";
     outFile.close();
+    
 
+    std::string pngName = m_strName + ".png";
+    std::string dotCmd = "dot -Tpng "+ filename +" > "+ pngName;
+    system(dotCmd.c_str());
     return true;
 }
 
