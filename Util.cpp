@@ -30,3 +30,14 @@ bool UnicodeToUTF8(const std::wstring& wstrValue, std::string& strRet)
 	delete[]buffer;
 	return ret;
 }
+
+void ReplaceChar(std::vector<char> &str,const char old_char, const char new_char)
+{
+	for (int i = 0; i < str.size(); ++i)
+	{
+		if (str[i] == old_char)
+		{
+			str[i] = new_char;
+		}
+	}
+ }    

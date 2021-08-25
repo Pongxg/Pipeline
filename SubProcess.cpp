@@ -28,7 +28,7 @@ bool SubProcess::Init(const nlohmann::json& _json)
 	m_pPipeline = gPipelineInstance->CreatePipeline(pipelinePath);
 	if (!m_pPipeline)
 	{
-		LOG(ERROR) << "SubProcess:create subPipeline fail:" << pipelinePath;
+		LOG(WARNING) << "SubProcess:create subPipeline fail:" << pipelinePath;
 		return false;
 	}
 

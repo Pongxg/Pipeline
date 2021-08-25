@@ -22,5 +22,5 @@ bool UTF8ToUnicode(const std::string& s, std::wstring& result);
 
 bool UnicodeToUTF8(const std::wstring& wstrValue, std::string& strRet);
 
-
+void ReplaceChar(std::vector<char>& str, const char old_char, const char new_char);
 

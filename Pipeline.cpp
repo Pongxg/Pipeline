@@ -29,17 +29,22 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
             return false;
         }
         m_strName = json_dto["pipelineName"];
-    
-    
+
+
         const nlohmann::json node = json_dto["node"];
         for (auto& elem : node)
         {
-            TaskNode *node = gPipelineInstance->CreateNode(elem.at("nodeType"));
+            TaskNode* node = gPipelineInstance->CreateNode(elem.at("nodeType"));
             node->Init(elem);
             m_mapTasks[elem.at("id")] = node;
         }
 
         nlohmann::json dag = json_dto["dag"];
+        if (dag.size() <= 0)
+        {
+            LOG(ERROR) << "ParseFile::dag node is null:" << m_strFilePath;
+            return false;
+        }
         for (auto& elem : dag)
         {
             if (!DagConnect(elem))
@@ -115,6 +120,7 @@ bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
 
 bool Pipeline::WriteReport()
 {
+
     if (!m_pStartNode)
     {
         LOG(ERROR) << "WriteReport::pipeline head node non exists:" << m_strName;
@@ -132,7 +138,11 @@ bool Pipeline::WriteReport()
         return false;
     }
     outFile << "strict digraph G {\n";
-    m_pStartNode->WriterReport(outFile);
+    for (int i = 0; i < m_vecDagSource.size(); ++i)
+    {
+        m_vecDagSource[i]->WriterReport(outFile);
+    }
+    //m_pStartNode->WriterReport(outFile);
     outFile << "}\n";
     outFile.close();
     
@@ -156,6 +166,7 @@ bool Pipeline::DagConnect(const nlohmann::json _json)
         return false;
     }
     sourceNode->SetName(sourceNodeId);
+    m_vecDagSource.push_back(sourceNode);
     nlohmann::json  targetNodeIds = _json.at("targetNodeIds");
     if (targetNodeIds.size() <= 0)
     {

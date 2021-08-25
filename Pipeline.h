@@ -17,4 +17,5 @@ private:
 	std::string m_strStartNodeID = "";
 	TaskNode* m_pStartNode = nullptr;
 	std::map<std::string, TaskNode*> m_mapTasks;
+	std::vector<TaskNode*> m_vecDagSource;
 };

@@ -1,4 +1,5 @@
 #include "TaskNode.h"
+#include "Util.h"
 
 TaskNode::TaskNode()
 {
@@ -32,14 +33,14 @@ bool TaskNode::Init(const nlohmann::json& _json)
             retryTimes = it.value();
         if (it.key() == "comment")
             comment = it.value();
-        if (it.key() == "properties")
-            properties = it.value();
-        if (it.key() == "propertiesMapping")
-            propertiesMapping = it.value();
+        //if (it.key() == "properties")
+        //    properties = it.value();
+        //if (it.key() == "propertiesMapping")
+        //    propertiesMapping = it.value();
         if (it.key() == "subPipeline")
             subPipeline = it.value();
-        if (it.key() == "dag")
-            dag = it.value();
+        //if (it.key() == "dag")
+        //    dag = it.value();
     }
 
 	return true;
@@ -54,6 +55,14 @@ bool TaskNode::AddChild(TaskNode* _node)
 void TaskNode::SetName(std::string _node_name)
 {
     m_strNodeName = _node_name;
+
+    std::vector<char>  vecBuff;
+    vecBuff.resize(_node_name.size());
+    vecBuff.assign(_node_name.begin(), _node_name.end()); 
+    ReplaceChar(vecBuff,'-','_');
+    m_strNode.resize(vecBuff.size());
+    m_strNode.assign(vecBuff.begin(), vecBuff.end());
+    vecBuff.clear();
     m_strLabelName = _node_name;
 }
 
@@ -65,7 +74,7 @@ std::string TaskNode::GetHandler()
 
 bool TaskNode::WriterReport(std::ostream& _out)
 {
-    _out << m_strNodeName;
+    _out << m_strNode;
     _out << " [";
     if (m_strLabelName != "") {
         _out << " label=\"" << m_strLabelName <<"\"";
@@ -85,10 +94,10 @@ bool TaskNode::WriterReport(std::ostream& _out)
 
     for (int i = 0; i < m_vecChildList.size(); ++i)
     {
-        _out << m_strNodeName << "->"<< m_vecChildList[i]->GetName();
+        _out << m_strNode << "->"<< m_vecChildList[i]->GetNodeName();
         _out << ";\n";
 
-        m_vecChildList[i]->WriterReport(_out);
+        //m_vecChildList[i]->WriterReport(_out);
     }
 
     return true;

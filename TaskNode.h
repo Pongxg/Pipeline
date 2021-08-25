@@ -12,6 +12,7 @@ public:
     bool AddChild(TaskNode* _node);
     void SetName(std::string _node_name);
     std::string GetName() { return m_strNodeName; }
+    std::string GetNodeName() { return m_strNode; }
     std::string GetHandler();
 
 public:
@@ -25,10 +26,10 @@ public:
     int             timeout = 4;
     int             retryTimes = 0;
     std::string     comment;
-    nlohmann::json  properties;
-    nlohmann::json  propertiesMapping;
+    //nlohmann::json  properties;
+    //nlohmann::json  propertiesMapping;
     std::string     subPipeline = "";
-    nlohmann::json  dag;
+    //nlohmann::json  dag;
 
     std::vector<TaskNode*>m_vecChildList;
 
@@ -36,6 +37,7 @@ public:
     std::string  m_strHandlerName = "";
 
     //graphviz attribute
+    std::string  m_strNode = "";
     std::string  m_strLabelName = "";
     std::string  m_strFillcolor = "";
     std::string  m_strShape = "";
