@@ -106,7 +106,7 @@ bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
     {
         return false;
     }
-    _handle_name = iter->GetHandler();;
+    _handle_name = iter->second->GetHandler();;
     return true;
 }
 
@@ -115,6 +115,25 @@ bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
 
 bool Pipeline::WriteReport()
 {
+    if (!m_pStartNode)
+    {
+        LOG(ERROR) << "WriteReport::pipeline head node non exists:" << m_strName;
+        return false;
+    }
+    std::string filename = m_strName + ".dot";
+
+    std::ofstream outFile;
+    outFile.open(filename.c_str(), std::ios::out);
+
+    if (outFile.fail())
+    {
+        LOG(ERROR) << "WriteReport::out dot file fail:" << m_strName;
+        return false;
+    }
+    outFile << "strict digraph G {\n";
+    m_pStartNode->WriterReport(outFile);
+    outFile << "}\n";
+    outFile.close();
 
     return true;
 }
@@ -142,6 +161,7 @@ bool Pipeline::DagConnect(const nlohmann::json _json)
 
         std::string destName = *it;
         TaskNode* destNode = FindTaskNode(destName);
+        destNode->SetName(destName);
         if (destNode == NULL)
         {
             LOG(ERROR) << "DagConnect::dest node is null:" << sourceNodeId <<" destName: "<< destName;

@@ -107,7 +107,8 @@ bool PipelineManager::FindTaskNode(Pipeline* _pipeline, std::string& _task_handl
 	}
 	else
 	{
-		return _pipeline->FindNodeHandle(_dag_name, _task_handle);
+		/*return _pipeline->FindNodeHandle(_dag_name, _task_handle);*/
+		return NULL;
 	}
 	return false;
 }
@@ -116,7 +117,6 @@ bool PipelineManager::FindTaskNode(Pipeline* _pipeline, std::string& _task_handl
 
 bool PipelineManager::WriteReport()
 {
-
 	std::map<std::string, Pipeline*>::iterator  iter = m_mapPipeline.begin();
 	for ( ;iter != m_mapPipeline.end();++iter)
 	{

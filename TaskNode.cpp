@@ -54,9 +54,42 @@ bool TaskNode::AddChild(TaskNode* _node)
 void TaskNode::SetName(std::string _node_name)
 {
     m_strNodeName = _node_name;
+    m_strLabelName = _node_name;
 }
 
 std::string TaskNode::GetHandler()
 {
     return m_strHandlerName;
+}
+
+
+bool TaskNode::WriterReport(std::ostream& _out)
+{
+    _out << m_strNodeName;
+    _out << " [";
+    if (m_strLabelName != "") {
+        _out << " label=\"" << m_strLabelName <<"\"";
+    }
+    if (m_strFillcolor != "") {
+        _out << " fillcolor=\"" << m_strFillcolor << "\"";
+    }
+    if (m_strShape != "") {
+        _out << " shape=\"" << m_strShape << "\"";
+    }
+    if (m_strStyle != "") {
+        _out << " style=\"" << m_strStyle << "\"";
+    }
+    _out << "]";
+    _out << ";\n";
+
+
+    for (int i = 0; i < m_vecChildList.size(); ++i)
+    {
+        _out << m_strNodeName << "->"<< m_vecChildList[i]->GetName();
+        _out << ";\n";
+
+        m_vecChildList[i]->WriterReport(_out);
+    }
+
+    return true;
 }

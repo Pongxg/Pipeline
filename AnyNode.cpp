@@ -2,6 +2,9 @@
 
 AnyNode::AnyNode()
 {
+	m_strFillcolor = "bisque";
+	m_strShape = "parallelogram";
+	m_strStyle = "filled";
 }
 
 AnyNode::~AnyNode()
@@ -19,11 +22,6 @@ bool AnyNode::Init(const nlohmann::json& _json)
 }
 
 bool AnyNode::Execute()
-{
-	return true;
-}
-
-bool AnyNode::WriterReport()
 {
 	return true;
 }

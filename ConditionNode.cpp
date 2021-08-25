@@ -2,6 +2,10 @@
 
 ConditionNode::ConditionNode()
 {
+	m_strFillcolor = "cyan";
+	m_strShape = "diamond";
+	m_strStyle = "filled";
+
 }
 
 ConditionNode::~ConditionNode()
@@ -20,11 +24,6 @@ bool ConditionNode::Init(const nlohmann::json& _json)
 }
 
 bool ConditionNode::Execute()
-{
-	return true;
-}
-
-bool ConditionNode::WriterReport()
 {
 	return true;
 }

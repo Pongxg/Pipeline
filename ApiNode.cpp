@@ -23,8 +23,3 @@ bool ApiNode::Execute()
 {
 	return true;
 }
-
-bool ApiNode::WriterReport()
-{
-	return true;
-}
