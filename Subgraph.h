@@ -1,25 +1,27 @@
 #pragma once
-
-#include "AttributeSet.h"
-#include "Graph.h"
-
-
-class Subgraph : public Graph {
-private:
-  SubgraphAttributeSet _attributes;
-
+#include "Node.h"
+#include <vector>
+class GraphNode;
+class Edge;
+class Subgraph:public Node  {
 public:
-  Subgraph(const std::string& id,  bool isDigraph = false,
-    std::string label = "") : Graph( isDigraph, label, id),
-    _attributes(SubgraphAttributeSet()) {
-  }
+	Subgraph();
+	virtual ~Subgraph();
+	 
+	void SetLabel(std::string _name);
+	std::string GetLabel();
+	GraphNode* AddNode(const std::string& _label, const std::string& _id);
+	Edge* AddEdge(GraphNode* _src, GraphNode* _dest, const std::string& _label);
+	Subgraph* AddSubgraph(const std::string& label, const std::string& _id);
+	bool WriterReport(std::ostream& _out, std::string _prefix, int _depth);
+private:
 
-  virtual ~Subgraph() {};
+	std::string m_strLabel;
+	std::vector<GraphNode*> m_vecNodes;
+	std::vector<Edge*> m_vecEdges;
+	std::vector<Subgraph*> m_vecSubgraphs;
 
-  SubgraphAttributeSet& GetAttributes() {
-    return _attributes;
-  }
-
-  virtual void Print(std::ostream& out, unsigned tabDepth);
 };
+
+
 

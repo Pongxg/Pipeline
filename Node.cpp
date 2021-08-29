@@ -1,27 +1,22 @@
 #include "Node.h"
-#include "Util.h"
+#include "TaskNode.h"
 
+Node::Node() {
 
-/**
- * Prints out a string representation of the node (essentially, a line
- * describing it for the DOT file).
- */
-void Node::Print(std::ostream& out) {
-    //Node identifier in the DOT file.
-    out << GetId();
-
-    //Label
-    if (GetLabel() != "") {
-        _attributes.AddCustomAttribute("label", GetLabel());
-    }
-
-    if (!_attributes.Empty()) {
-      out << " [";
-      _attributes.Print(out);
-      out << "]";
-    }
-
-    //Line ending semicolon and newline.
-    out << ";\n";
 }
+Node::~Node() {
 
+}
+void Node::SetName(std::string _name) {
+	m_strName = _name;
+}
+std::string Node::GetName()
+{
+	return m_strName;
+}
+void Node::SetTaskNode(TaskNode* _node) {
+	m_pTaskNode = _node;
+}
+TaskNode* Node::GetTaskNode() {
+	return m_pTaskNode;
+}

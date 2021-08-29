@@ -1,49 +1,21 @@
 #pragma once
+#include "Node.h"
 
-#include "AttributeSet.h"
-#include "Idable.h"
-
-
-class Graph;
-
-/**
- * Represents an edge in a graph.
- */
+class  GraphNode;
 class Edge {
-private:
-  Node * _src;
-  Node * _dst;
-  std::string _label;
-  EdgeAttributeSet _attributes;
-
 public:
-  Edge(Node * src, Node * dst, std::string label = "");
-
-  virtual ~Edge() {};
-
-  Node * GetSource() {
-    return _src;
-  }
-
-  Node * GetDest() {
-    return _dst;
-  }
-
-  const std::string& GetLabel() {
-    return _label;
-  }
-
-  void SetLabel(const std::string& label) {
-    _label = label;
-  }
-
-  /**
-   * Returns the set of attributes for this edge.
-   * Manipulate this object to change the style of this edge.
-   */
-  EdgeAttributeSet& GetAttributes() {
-    return _attributes;
-  }
-
-  void Print(bool isDirected, std::ostream& out);
+	Edge();
+	virtual ~Edge();
+	
+	void SetLabel(std::string _name);
+	std::string GetLabel();
+	void SetSrcNode(GraphNode* _node);
+	GraphNode* GetSrcNode();
+	void SetDestNode(GraphNode* _node);
+	GraphNode* GetSDestNode();
+	bool WriterReport(std::ostream& _out, std::string _prefix, int _depth);
+private:
+	GraphNode* m_pSrcNode = NULL;
+	GraphNode* m_pDestNode = NULL;
+	std::string m_strLabelName = "";
 };

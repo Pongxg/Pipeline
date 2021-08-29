@@ -113,23 +113,23 @@ bool PipelineManager::FindTaskNode(Pipeline* _pipeline, std::string& _task_handl
 	return false;
 }
 
-#include "RootGraph.h"
+//#include "RootGraph.h"
 
 bool PipelineManager::WriteReport()
 {
 	
-	RootGraph *graph = new RootGraph();
-	Node* a = graph->AddNode("a");
-	Node* b = graph->AddNode("b");
-	Node* c = graph->AddNode("c");
-	Node* d = graph->AddNode("d");
+	//RootGraph *graph = new RootGraph();
+	//Node* a = graph->AddNode("a");
+	//Node* b = graph->AddNode("b");
+	//Node* c = graph->AddNode("c");
+	//Node* d = graph->AddNode("d");
 
-	graph->AddEdge(a,b);
-	graph->AddEdge(a, c);
-	graph->AddEdge(b, d);
-	graph->AddEdge(c, d);
+	//graph->AddEdge(a,b);
+	//graph->AddEdge(a, c);
+	//graph->AddEdge(b, d);
+	//graph->AddEdge(c, d);
 
-	graph->WriteToFile("test.dot");
+	//graph->WriteToFile("test.dot");
 
 
 

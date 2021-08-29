@@ -1,39 +1,15 @@
 #pragma once
-
-#include <ostream>
 #include <string>
-
-#include "AttributeSet.h"
-#include "Idable.h"
-
-
-/**
- * Represents a node in a graph.
- */
-class Node : public Idable {
-private:
-  std::string _label;
-  NodeAttributeSet _attributes;
-
+class TaskNode;
+class Node {
 public:
-  Node(const std::string& id, std::string label = "") :
-    Idable(id), _label(label) {
-  }
-  virtual ~Node() {};
-
-  void Print(std::ostream& out);
-
-  /** Simple getters / setters **/
-  const std::string& GetLabel() {
-    return _label;
-  }
-
-  void SetLabel(std::string label) {
-    _label = label;
-  };
-
-  NodeAttributeSet& GetAttributes() {
-    return _attributes;
-  }
+	Node();
+	virtual ~Node();
+	void SetName(std::string _name);
+	std::string GetName();
+	void SetTaskNode(TaskNode* _node);
+	TaskNode* GetTaskNode();
+protected:
+	std::string m_strName = "";
+	TaskNode* m_pTaskNode = NULL;
 };
-
