@@ -24,3 +24,6 @@ bool UnicodeToUTF8(const std::wstring& wstrValue, std::string& strRet);
 
 void ReplaceChar(std::vector<char>& str, const char old_char, const char new_char);
 
+void ReplaceAll(std::string& str, const std::string& from,const std::string& to);
+
+std::string SanitizeString(std::string& label);
