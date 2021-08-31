@@ -36,7 +36,7 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
         {
             TaskNode* node = gPipelineInstance->CreateNode(elem.at("nodeType"));
             node->Init(elem);
-            m_mapTasks[elem.at("id")] = node;
+            m_mapTaskNodes[elem.at("id")] = node;
         }
 
         nlohmann::json dag = json_dto["dag"];
@@ -55,8 +55,8 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
 
         m_strStartNodeID = json_dto["startNodeId"];
 
-        std::map<std::string, TaskNode*>::iterator  iter = m_mapTasks.find(m_strStartNodeID);
-        if (iter == m_mapTasks.end())
+        std::map<std::string, TaskNode*>::iterator  iter = m_mapTaskNodes.find(m_strStartNodeID);
+        if (iter == m_mapTaskNodes.end())
         {
             LOG(ERROR) << "ParseFile::start node non existent:" << m_strStartNodeID;
             return false;
@@ -82,8 +82,8 @@ TaskNode* Pipeline::FindTaskNode(std::string& _dag_name)
     if (pos != std::string::npos)
     {
         std::string subProcessName = _dag_name.substr(0, pos);
-        std::map<std::string, TaskNode*>::iterator  iter = m_mapTasks.find(subProcessName);
-        if (iter == m_mapTasks.end())
+        std::map<std::string, TaskNode*>::iterator  iter = m_mapTaskNodes.find(subProcessName);
+        if (iter == m_mapTaskNodes.end())
         {
             LOG(ERROR) << "FindTaskNode::sub task node non existent:" << subProcessName;
             return NULL;
@@ -93,8 +93,8 @@ TaskNode* Pipeline::FindTaskNode(std::string& _dag_name)
     }
     else
     {
-        std::map<std::string, TaskNode*>::iterator  iter = m_mapTasks.find(_dag_name);
-        if (iter == m_mapTasks.end())
+        std::map<std::string, TaskNode*>::iterator  iter = m_mapTaskNodes.find(_dag_name);
+        if (iter == m_mapTaskNodes.end())
         {
             LOG(ERROR) << "FindTaskNode::task node non existent:" << _dag_name;
             return NULL;
@@ -104,10 +104,16 @@ TaskNode* Pipeline::FindTaskNode(std::string& _dag_name)
     return NULL;
 }
 
+TaskNode* Pipeline::FindStartNode()
+{
+    return m_pStartNode;
+}
+
+
 bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
 {
-    std::map<std::string, TaskNode*>::iterator  iter = m_mapTasks.find(name);
-    if (iter == m_mapTasks.end())
+    std::map<std::string, TaskNode*>::iterator  iter = m_mapTaskNodes.find(name);
+    if (iter == m_mapTaskNodes.end())
     {
         return false;
     }
@@ -115,19 +121,15 @@ bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
     return true;
 }
 
-
-
-
 bool Pipeline::WriteReport()
 {
-
     if (!m_pStartNode)
     {
         LOG(ERROR) << "WriteReport::pipeline head node non exists:" << m_strName;
         return false;
     }
-    std::string filename = m_strName + ".dot";
 
+    std::string filename = m_strName + ".dot";
 
     std::ofstream outFile;
     outFile.open(filename.c_str(), std::ios::out);
@@ -138,11 +140,12 @@ bool Pipeline::WriteReport()
         return false;
     }
     outFile << "strict digraph G {\n";
-    for (int i = 0; i < m_vecDagSource.size(); ++i)
+    std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.begin();
+    for (; iter != m_mapGraphNodes.end(); ++iter)
     {
-        m_vecDagSource[i]->WriterReport(outFile);
+        iter->second->WriterReport(outFile);
     }
-    //m_pStartNode->WriterReport(outFile);
+
     outFile << "}\n";
     outFile.close();
     
@@ -151,6 +154,12 @@ bool Pipeline::WriteReport()
     std::string dotCmd = "dot -Tpng "+ filename +" > "+ pngName;
     system(dotCmd.c_str());
     return true;
+}
+
+
+std::map<std::string, TaskNode*> Pipeline::GetGraph()
+{
+    return m_mapGraphNodes;
 }
 
 
@@ -165,8 +174,13 @@ bool Pipeline::DagConnect(const nlohmann::json _json)
         LOG(ERROR) << "DagConnect::source node is null:" << sourceNodeId;
         return false;
     }
-    sourceNode->SetName(sourceNodeId);
-    m_vecDagSource.push_back(sourceNode);
+    sourceNode->SetSourceName(sourceNodeId);
+    std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.find(sourceNode->GetName());
+    if (iter == m_mapGraphNodes.end())
+    {
+        m_mapGraphNodes[sourceNode->GetName()] = sourceNode;
+    }
+
     nlohmann::json  targetNodeIds = _json.at("targetNodeIds");
     if (targetNodeIds.size() <= 0)
     {
@@ -177,11 +191,17 @@ bool Pipeline::DagConnect(const nlohmann::json _json)
 
         std::string destName = *it;
         TaskNode* destNode = FindTaskNode(destName);
-        destNode->SetName(destName);
         if (destNode == NULL)
         {
             LOG(ERROR) << "DagConnect::dest node is null:" << sourceNodeId <<" destName: "<< destName;
             return false;
+        }
+        destNode->SetDestName(destName);
+        std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.find(destNode->GetName());
+        if (iter == m_mapGraphNodes.end())
+        {
+    
+            m_mapGraphNodes[destNode->GetName()] = destNode;
         }
         sourceNode->AddChild(destNode);
     }

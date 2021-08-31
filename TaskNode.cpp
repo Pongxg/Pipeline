@@ -52,19 +52,36 @@ bool TaskNode::AddChild(TaskNode* _node)
     return true;
 }
 
-void TaskNode::SetName(std::string _node_name)
+void TaskNode::SetSourceName(std::string _node_name)
 {
-    m_strNodeName = _node_name;
+    if (m_strName != "") return;
+    m_strName = _node_name;
 
     std::vector<char>  vecBuff;
     vecBuff.resize(_node_name.size());
     vecBuff.assign(_node_name.begin(), _node_name.end()); 
     ReplaceChar(vecBuff,'-','_');
-    m_strNode.resize(vecBuff.size());
-    m_strNode.assign(vecBuff.begin(), vecBuff.end());
+    m_strNodeName.resize(vecBuff.size());
+    m_strNodeName.assign(vecBuff.begin(), vecBuff.end());
     vecBuff.clear();
     m_strLabelName = _node_name;
 }
+
+void TaskNode::SetDestName(std::string _node_name)
+{
+    if (m_strName != "") return;
+    m_strName = _node_name;
+
+    std::vector<char>  vecBuff;
+    vecBuff.resize(_node_name.size());
+    vecBuff.assign(_node_name.begin(), _node_name.end());
+    ReplaceChar(vecBuff, '-', '_');
+    m_strNodeName.resize(vecBuff.size());
+    m_strNodeName.assign(vecBuff.begin(), vecBuff.end());
+    vecBuff.clear();
+    m_strLabelName = _node_name;
+}
+
 
 std::string TaskNode::GetHandler()
 {
@@ -72,12 +89,22 @@ std::string TaskNode::GetHandler()
 }
 
 
-bool TaskNode::WriterReport(std::ostream& _out)
+bool TaskNode::WriterReport(std::ostream& _out, std::string _node_prefix, std::string _label_prefix, int depth)
 {
-    _out << m_strNode;
+    std::string strNodeName = m_strNodeName;
+    std::string strlabelName = m_strLabelName;
+
+    if (depth > 0)
+    {
+        strNodeName = _node_prefix + "__" + m_strNodeName;
+        strlabelName = _label_prefix + "#" + m_strLabelName;
+    }
+  
+
+    _out << strNodeName;
     _out << " [";
-    if (m_strLabelName != "") {
-        _out << " label=\"" << m_strLabelName <<"\"";
+    if (strlabelName != "") {
+        _out << " label=\"" << strlabelName <<"\"";
     }
     if (m_strFillcolor != "") {
         _out << " fillcolor=\"" << m_strFillcolor << "\"";
@@ -91,13 +118,16 @@ bool TaskNode::WriterReport(std::ostream& _out)
     _out << "]";
     _out << ";\n";
 
-
     for (int i = 0; i < m_vecChildList.size(); ++i)
     {
-        _out << m_strNode << "->"<< m_vecChildList[i]->GetNodeName();
-        _out << ";\n";
+        std::string nodeName = m_vecChildList[i]->GetNodeName();
 
-        //m_vecChildList[i]->WriterReport(_out);
+        if (depth > 0)
+        {
+            nodeName = _node_prefix + "__" + m_vecChildList[i]->GetNodeName();
+        }
+        _out << strNodeName << "->"<< nodeName;
+        _out << ";\n";
     }
 
     return true;

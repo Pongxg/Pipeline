@@ -50,7 +50,7 @@ Pipeline* PipelineManager::CreatePipeline(std::string  _file_path)
 	if (iter != m_mapPipeline.end())
 	{
 		LOG(WARNING) << "CreatePipeline:: pipeline already exists:" << _file_path;
-		return false;
+		return iter->second;
 	}
 	Pipeline* pipeline = new Pipeline();
 	pipeline->ParseFile(_file_path);
