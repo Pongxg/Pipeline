@@ -12,10 +12,32 @@ enum _Task_Node
     TASK_SIMPLE,//简单节点类型，可以直接执行本地代码，类实现SimpleTaskHandler接口即可
 };
 
+struct FileNode
+{
+	std::string fileName;
+	std::string filePath;
+	std::string filePack;
+	std::vector<std::string> execPos;
+};
+struct Handler
+{
+	std::string name = "";
+	std::string nodetype = "";
+	std::string file_path = "";
+	std::string package = "";
+	std::string comment = "";
+	bool bExecCmd = false;
+};
+
 
 typedef std::map<std::string, std::string> StrMap;
 typedef StrMap::iterator StrMapIter;
 typedef std::pair<StrMapIter, bool > StrMapPair;
+
+typedef std::map<std::string, FileNode> FileNodeMap;
+typedef FileNodeMap::iterator  FileNodeIter;
+typedef std::pair<FileNodeIter, bool > FileNodePair;
+
 
 
 bool UTF8ToUnicode(const std::string& s, std::wstring& result);
