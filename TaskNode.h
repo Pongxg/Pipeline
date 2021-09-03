@@ -31,7 +31,7 @@ public:
     int             concurrencyThreshold = 3600;
     int             timeout = 4;
     int             retryTimes = 0;
-    std::string     comment;
+    std::string     comment = "";
     std::string     subPipeline = "";
 
     std::vector<TaskNode*>m_vecChildList;

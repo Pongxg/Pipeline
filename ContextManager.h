@@ -21,6 +21,8 @@ public:
 	bool AddUnknowTaskNode(std::string unname, TaskNode* node);
 	bool AddExeTaskNode(std::string unname, TaskNode* node);
 
+	bool FindTaskNode(std::string& name, TaskNode* node);
+
 	bool OrderReport();
 	bool WriteReport(std::string _file_name);
 private:

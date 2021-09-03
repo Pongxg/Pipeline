@@ -3,7 +3,8 @@
 #include "easylogging++.h"
 #include "PipelineManager.h"
 #include "ContextManager.h"
-
+#include <iostream>
+#include <locale>
 Pipeline::Pipeline()
 {
 }
@@ -122,7 +123,7 @@ bool Pipeline::FindNodeHandler(std::string name, std::string& _handle_name)
     _handle_name = iter->second->GetHandler();;
     return true;
 }
-
+#include <codecvt>
 bool Pipeline::WriteReport()
 {
     if (!m_pStartNode)
@@ -130,27 +131,24 @@ bool Pipeline::WriteReport()
         LOG(ERROR) << "WriteReport::pipeline head node non exists:" << m_strName;
         return false;
     }
-
     std::string filename = m_strName + ".dot";
-
     std::ofstream outFile;
     outFile.open(filename.c_str(), std::ios::out);
-
     if (outFile.fail())
     {
         LOG(ERROR) << "WriteReport::out dot file fail:" << m_strName;
         return false;
     }
     outFile << "strict digraph G {\n";
+    outFile << "edge [fontname=\"FangSong\"];\n"; 
+    outFile << "node [fontname=\"FangSong\"];\n";
     std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.begin();
     for (; iter != m_mapGraphNodes.end(); ++iter)
     {
         iter->second->WriterReport(outFile);
     }
-
     outFile << "}\n";
     outFile.close();
-    
 
     std::string pngName = m_strName + ".png";
     std::string dotCmd = "dot -Tpng "+ filename +" > "+ pngName;
@@ -183,9 +181,7 @@ bool Pipeline::TraverNodeFile()
             std::string name = iter->second->id;
             if (iter->second->classRef != "")
             {
-                gContextInstance->AddUnknowClassTaskNode(iter->second->classRef, iter->second);
-            
-                
+                gContextInstance->AddUnknowClassTaskNode(iter->second->classRef, iter->second);                        
             }
             else if (iter->second->m_strHandlerName != "")
             {

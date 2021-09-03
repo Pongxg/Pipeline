@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "FileManager.h"
 #include "easylogging++.h"
+#include "PipelineManager.h"
 
 TaskNode::TaskNode()
 {
@@ -35,10 +36,12 @@ bool TaskNode::Init(const nlohmann::json& _json)
             retryTimes = it.value();
         if (it.key() == "comment")
         {
-            std::string value =  it.value();
-            std::wstring result;
-            UTF8ToUnicode(value, result);
-            comment=  UnicodeToAscii(result);
+            //std::string value =  it.value();
+            //std::wstring result;
+            //UTF8ToUnicode(value, result);
+            //comment=  UnicodeToAscii(result);
+
+            comment = it.value();
         }
         if (it.key() == "subPipeline")
         {
@@ -148,22 +151,44 @@ bool TaskNode::WriterReport(std::ostream& _out, std::string _node_prefix, std::s
         strNodeName = _node_prefix + "__" + m_strNodeName;
         strlabelName = _label_prefix + "#" + m_strLabelName;
     }
-  
+    bool bFinder = false;
+    std::string comment = "";
+    if ((m_pFileNode && m_pFileNode->execPos.size() > 0) || (!m_pFileNode && m_nType == TASK_SIMPLE))
+    {
+        bFinder = true;
+    }
+    if (comment == "" && m_pFileNode && m_pFileNode->comment != "")
+    {
+        comment = m_pFileNode->comment;
+    }
 
+
+    std::string info = "жпнд";
     _out << strNodeName;
     _out << " [";
+
     if (strlabelName != "") {
-        _out << " label=\"" << strlabelName <<"\"";
+        _out << " label=\"" << strlabelName << "\n"<< info <<"\"";
     }
-    if (m_strFillcolor != "") {
-        _out << " fillcolor=\"" << m_strFillcolor << "\"";
+    if (!bFinder)
+    {
+        if (m_strFillcolor != "") {
+            _out << " fillcolor=\"" << m_strFillcolor << "\"";
+        }
     }
+    else
+    {
+        _out << " fillcolor = red ";
+    }
+
     if (m_strShape != "") {
         _out << " shape=\"" << m_strShape << "\"";
     }
     if (m_strStyle != "") {
         _out << " style=\"" << m_strStyle << "\"";
     }
+
+
     _out << "]";
     _out << ";\n";
 

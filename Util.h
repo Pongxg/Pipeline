@@ -18,6 +18,7 @@ struct FileNode
 	std::string filePath;
 	std::string filePack;
 	std::string replaceNode;
+	std::string comment = "";
 	std::vector<std::string> execPos;
 };
 struct Handler

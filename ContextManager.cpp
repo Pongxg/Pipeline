@@ -51,6 +51,7 @@ bool ContextManager::AddUnknowHandlerTaskNode(std::string unname, TaskNode* node
 
 bool ContextManager::AddUnknowTaskNode(std::string unname, TaskNode* node)
 {
+
     TaskNodePair pair = m_mapUnknowNode.insert(std::pair(unname, node));
     if (!pair.second)
     {
@@ -71,9 +72,20 @@ bool ContextManager::AddExeTaskNode(std::string unname, TaskNode* node)
     return true;
 }
 
+bool ContextManager::FindTaskNode(std::string& name, TaskNode* node)
+{
+    TaskNodeIter iter = m_mapExeNode.find(name);
+    if (iter != m_mapExeNode.end())
+    {
+        
+        return true;
+    }
+    return false;
+}
+
+
 bool ContextManager::OrderReport()
 {
-
     int nodesize = m_mapKnowNode.size() + m_mapUnknowClassNode.size() + m_mapUnknowHandlerNode.size()+ m_mapUnknowNode.size();
     int unkownNodesize = m_mapUnknowClassNode.size() + m_mapUnknowHandlerNode.size() + m_mapUnknowNode.size();
     int exeNodesize = m_mapExeNode.size(); 
@@ -132,6 +144,21 @@ bool ContextManager::OrderReport()
         outputList.reserve(10);
         std::string data = "已知节点File";
         outputList.push_back("已知节点File");
+        outputList.push_back(iter->first);
+        outputList.push_back(iter->second->m_strName);
+        outputList.push_back(iter->second->comment);
+        outputList.push_back(iter->second->classRef);
+        outputList.push_back(iter->second->m_strHandlerName);
+        m_vecOutputs.push_back(outputList);
+    }
+
+    iter = m_mapExeNode.begin();
+    for (; iter != m_mapExeNode.end(); ++iter)
+    {
+        std::vector < std::string >  outputList;
+        outputList.reserve(10);
+        std::string data = "未知源节点";
+        outputList.push_back("未知源节点");
         outputList.push_back(iter->first);
         outputList.push_back(iter->second->m_strName);
         outputList.push_back(iter->second->comment);
