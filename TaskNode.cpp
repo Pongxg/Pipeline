@@ -1,5 +1,7 @@
 #include "TaskNode.h"
 #include "Util.h"
+#include "FileManager.h"
+#include "easylogging++.h"
 
 TaskNode::TaskNode()
 {
@@ -32,13 +34,35 @@ bool TaskNode::Init(const nlohmann::json& _json)
         if (it.key() == "retryTimes")
             retryTimes = it.value();
         if (it.key() == "comment")
-            comment = it.value();
-        //if (it.key() == "properties")
-        //    properties = it.value();
+        {
+            std::string value =  it.value();
+            std::wstring result;
+            UTF8ToUnicode(value, result);
+            comment=  UnicodeToAscii(result);
+        }
+        if (it.key() == "subPipeline")
+        {
+            subPipeline = it.value();
+        }
+        if (it.key() == "properties")
+        {
+            nlohmann::json  propertiesJson = _json.at("properties");
+            for (auto iter = propertiesJson.begin(); iter != propertiesJson.end(); iter++) {
+                if (iter.key() == "handler")
+                {
+                    m_strHandlerName = propertiesJson["handler"];
+                }
+                else if (iter.key() == "toolType")
+                {
+                    m_strHandlerName = propertiesJson["toolType"];
+                }
+            }
+        }
+            
         //if (it.key() == "propertiesMapping")
         //    propertiesMapping = it.value();
-        if (it.key() == "subPipeline")
-            subPipeline = it.value();
+     
+        
         //if (it.key() == "dag")
         //    dag = it.value();
     }
@@ -65,6 +89,31 @@ void TaskNode::SetSourceName(std::string _node_name)
     m_strNodeName.assign(vecBuff.begin(), vecBuff.end());
     vecBuff.clear();
     m_strLabelName = _node_name;
+}
+
+bool TaskNode::BindNodeFile()
+{
+    if (m_nType == TASK_SUB_PROCESS || m_nType == TASK_ANY || m_nType == TASK_CONDITION)
+        return false;
+    FileNode* node = NULL;
+    if (classRef != "")
+    {
+        node = gFileInstance->GetBindFile(classRef);
+    }
+    else if(m_strHandlerName != "")
+    {
+        node = gFileInstance->GetBindNodeFile(m_strHandlerName,taskType);
+    }
+
+    if (node != NULL)
+    {
+        m_pFileNode = node;
+    }
+    else
+    {
+        LOG(ERROR) << "TaskNode::BindNodeFile nodeType:" << nodeType << " taskType:" << taskType <<"classRef:" << classRef <<"comment"<< comment;
+    }
+    return true;
 }
 
 void TaskNode::SetDestName(std::string _node_name)

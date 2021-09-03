@@ -17,6 +17,7 @@ struct FileNode
 	std::string fileName;
 	std::string filePath;
 	std::string filePack;
+	std::string replaceNode;
 	std::vector<std::string> execPos;
 };
 struct Handler
@@ -44,8 +45,12 @@ bool UTF8ToUnicode(const std::string& s, std::wstring& result);
 
 bool UnicodeToUTF8(const std::wstring& wstrValue, std::string& strRet);
 
+std::string UnicodeToAscii(const std::wstring& wstr);
+
 void ReplaceChar(std::vector<char>& str, const char old_char, const char new_char);
 
 void ReplaceAll(std::string& str, const std::string& from,const std::string& to);
+
+
 
 std::string SanitizeString(std::string& label);

@@ -12,6 +12,10 @@ public:
 	bool FindNodeHandler(std::string name, std::string& _handle_name);
 	bool WriteReport();
 	std::map<std::string, TaskNode*> GetGraph();
+	bool BindNodeFile();
+
+	bool TraverNodeFile();
+
 private:
 	bool DagConnect(const nlohmann::json _json);
 	

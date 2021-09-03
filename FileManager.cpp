@@ -1,6 +1,7 @@
 #include "FileManager.h"
 #include <filesystem>
 #include "easylogging++.h"
+#include "Util.h"
 #define PACK_COUNT 6
 std::string PACK_FILE[PACK_COUNT] = {"homestyler-model-agents","homestyler-transform-worker","t3d-cloud-platform","t3d-material-fitting","t3d-unify-scheduler","t3d-unify-scheduler" };
 std::string PACK_FILE_PATH[PACK_COUNT] = {"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\homestyler-model-agents","D:\\InstallSource\\Pipeline\\bin\\SourceFile\\homestyler-transform-worker",
@@ -19,7 +20,7 @@ FileManager::~FileManager()
 
 bool FileManager::Init()
 {
-	for (int i = PACK_COUNT-1; i < PACK_COUNT; ++i)
+	for (int i = 0; i < PACK_COUNT; ++i)
 	{
 		TraversePath(PACK_FILE_PATH[i], PACK_FILE[i]);
 	}
@@ -49,6 +50,34 @@ void FileManager::ReadFile(std::string filename,std::vector<std::string> & execC
 	return;
 }
 
+FileNode * FileManager::GetBindFile(std::string &classRef)
+{
+	FileNodeIter iter = m_mapFileNodes.begin();
+	for (; iter != m_mapFileNodes.end(); ++iter)
+	{
+		std::string::size_type postion  = iter->second.replaceNode.find(classRef);
+		if (postion != std::string::npos)
+		{
+			return &iter->second;
+		}
+	}
+	return NULL;
+}
+
+FileNode* FileManager::GetBindNodeFile(std::string node, std::string task_type)
+{
+	FileNodeIter iter = m_mapFileNodes.begin();
+	for (; iter != m_mapFileNodes.end(); ++iter)
+	{
+		std::string::size_type postion = iter->second.fileName.find(node);
+		if (postion != std::string::npos)
+		{
+			return &iter->second;
+		}
+	}
+	return NULL;
+}
+
 void FileManager::TraversePath(std::string path,std::string pack)
 {
 	std::vector<std::string> mapFiles;
@@ -64,6 +93,9 @@ void FileManager::TraversePath(std::string path,std::string pack)
 			node.filePath = filePath;
 			node.fileName = fileName;
 			node.filePack = pack;
+			ReplaceAll(filePath, "\\", ".");
+			ReplaceAll(filePath, "/", ".");
+			node.replaceNode = filePath;
 			ReadFile(filePath, node.execPos);
 			mapFiles.push_back(filePath);
 			FileNodePair pairIter = m_mapFileNodes.insert(std::make_pair(filePath, node));

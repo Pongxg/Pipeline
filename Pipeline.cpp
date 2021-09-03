@@ -2,6 +2,7 @@
 #include "nlohmann/json.hpp"
 #include "easylogging++.h"
 #include "PipelineManager.h"
+#include "ContextManager.h"
 
 Pipeline::Pipeline()
 {
@@ -34,9 +35,10 @@ bool Pipeline::ParseFile(std::string m_strFilePath)
         const nlohmann::json node = json_dto["node"];
         for (auto& elem : node)
         {
-            TaskNode* node = gPipelineInstance->CreateNode(elem.at("nodeType"));
-            node->Init(elem);
-            m_mapTaskNodes[elem.at("id")] = node;
+            TaskNode* tnode = gPipelineInstance->CreateNode(elem.at("nodeType"));
+            tnode->Init(elem);
+            m_mapTaskNodes[elem.at("id")] = tnode;
+          
         }
 
         nlohmann::json dag = json_dto["dag"];
@@ -163,6 +165,54 @@ std::map<std::string, TaskNode*> Pipeline::GetGraph()
 }
 
 
+bool Pipeline::BindNodeFile()
+{
+    std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.begin();
+    for (; iter != m_mapGraphNodes.end();++iter) {
+        iter->second->BindNodeFile();
+    }
+    return true;
+}
+
+bool Pipeline::TraverNodeFile()
+{
+    std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.begin();
+    for (; iter != m_mapGraphNodes.end(); ++iter) {
+        if (iter->second->m_nType != TASK_SUB_PROCESS && iter->second->m_nType != TASK_ANY && iter->second->m_nType != TASK_CONDITION && iter->second->m_pFileNode == NULL)
+        {
+            std::string name = iter->second->id;
+            if (iter->second->classRef != "")
+            {
+                gContextInstance->AddUnknowClassTaskNode(iter->second->classRef, iter->second);
+            
+                
+            }
+            else if (iter->second->m_strHandlerName != "")
+            {
+                gContextInstance->AddUnknowHandlerTaskNode(iter->second->m_strHandlerName, iter->second);
+            }
+            else
+            {
+                gContextInstance->AddUnknowTaskNode(iter->second->id, iter->second);
+            }
+
+            LOG(ERROR) << "TraverNodeFile nodeType:" << iter->second->nodeType << " taskType:" << iter->second->taskType << "classRef:" << iter->second->classRef << "comment" << iter->second->comment;
+        }
+        else if(iter->second->m_nType != TASK_SUB_PROCESS && iter->second->m_nType != TASK_ANY && iter->second->m_nType != TASK_CONDITION)
+        {
+            gContextInstance->AddKnowTaskNode(iter->second->m_pFileNode->filePath, iter->second);
+            if (iter->second->m_pFileNode->execPos.size() >0 )
+            {
+                gContextInstance->AddExeTaskNode(iter->second->m_pFileNode->filePath, iter->second);
+            }
+        }
+        else 
+        {
+            LOG(ERROR) << "TraverNodeFile SubProcess:" << iter->second->nodeType << " taskType:" << iter->second->taskType << "classRef:" << iter->second->classRef << "comment" << iter->second->comment;
+        }
+    }
+    return true;
+}
 
 bool Pipeline::DagConnect(const nlohmann::json _json)
 {

@@ -27,11 +27,17 @@ public:
 
 	bool GenPipeline();
 
+	bool BindNodeFile();
+
 	Pipeline* CreatePipeline(std::string  _file_path);
 
 	bool FindPipelinePath(std::string& _file_name, std::string& _file_path);
 
 	Pipeline* FindPipeline(std::string& _file_name);
+
+	bool FilterNode();
+
+	bool FindBinderNode(std::string pipeline);
 
 	bool FindTaskNode(Pipeline* _pipeline, std::string& _task_handle, std::string& _dag_name);
 
@@ -51,12 +57,14 @@ private:
 private:
 	std::map<std::string, Pipeline*> m_mapPipeline;
 
-	std::map<std::string,std::string>  m_mapKnowNode;
+	//std::map<std::string,std::string>  m_mapKnowNode;
 
-	std::map<std::string, TASK_NODE> m_mapUnknowNode;
+	//std::map<std::string, TASK_NODE> m_mapUnknowNode;
 
 	StrMap m_mapPipelineName;
 
 	std::unordered_map<std::string, NodeFunction>  m_nodeFuncMap;
+
+
 };
 #define gPipelineInstance PipelineManager::GetInstance() 

@@ -31,6 +31,16 @@ bool UnicodeToUTF8(const std::wstring& wstrValue, std::string& strRet)
 	return ret;
 }
 
+std::string UnicodeToAscii(const std::wstring& wstr) {
+	int ansiiLen = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	char* pAssii = (char*)malloc(sizeof(char) * ansiiLen);
+	WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, pAssii, ansiiLen, nullptr, nullptr);
+	std::string ret_str = pAssii;
+	free(pAssii);
+	return ret_str;
+}
+
+
 void ReplaceChar(std::vector<char> &str,const char old_char, const char new_char)
 {
 	for (int i = 0; i < str.size(); ++i)

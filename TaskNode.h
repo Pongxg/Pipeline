@@ -8,6 +8,7 @@ public:
 	virtual ~TaskNode();
 	virtual bool Init(const nlohmann::json &_json);
 	virtual bool Execute() = 0;
+    virtual bool BindNodeFile();
     virtual bool WriterReport(std::ostream& _out, std::string _node_prefix = "", std::string _label_prefix = "", int depth = 0);
     virtual std::string GetNodeName() = 0;
 
@@ -49,6 +50,8 @@ public:
     std::string  m_strFillcolor = "";
     std::string  m_strShape = "";
     std::string  m_strStyle = "";
+
+    FileNode*   m_pFileNode = NULL;
 };
 
 typedef TaskNode* (*NodeFunction)(void);
