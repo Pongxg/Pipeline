@@ -2,10 +2,10 @@
 #include <filesystem>
 #include "easylogging++.h"
 #include "Util.h"
-#define PACK_COUNT 5
-std::string PACK_FILE[PACK_COUNT] = {"homestyler-model-agents","homestyler-transform-worker","t3d-cloud-platform","t3d-unify-scheduler","t3d-unify-scheduler" };
+//#define PACK_COUNT 5
+std::string PACK_FILE[PACK_COUNT] = {"homestyler-model-agents","homestyler-transform-worker","t3d-cloud-platform","t3d-unify-scheduler" };
 std::string PACK_FILE_PATH[PACK_COUNT] = {"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\homestyler-model-agents","D:\\InstallSource\\Pipeline\\bin\\SourceFile\\homestyler-transform-worker",
-"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\t3d-cloud-platform" ,"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\t3d-unify-scheduler","D:\\InstallSource\\Pipeline\\bin\\SourceFile"};
+"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\t3d-cloud-platform" ,"D:\\InstallSource\\Pipeline\\bin\\SourceFile\\t3d-unify-scheduler"};
 struct _file_node {
 	std::string file_name;
 	std::string file_node_name;
@@ -16,7 +16,6 @@ struct _file_node {
 FileManager* Singleton<FileManager>::m_pSingleton = NULL;
 FileManager::FileManager()
 {
-
 }
 
 FileManager::~FileManager()
@@ -148,9 +147,9 @@ bool FileManager::AddFileNode(std::string _name, std::string _node_name, bool fi
 bool FileManager::Init()
 {
 	ConfigueFilter();
-	for (int i = 0; i < PACK_COUNT; ++i)
+	for (int i = 0; i < PACK_COUNT-1; ++i)
 	{
-		TraversePath(PACK_FILE_PATH[i], PACK_FILE[i]);
+		TraversePath(PACK_FILE_PATH[i], PACK_FILE[i],i);
 	}
 	return true;
 }
@@ -221,7 +220,7 @@ FileNode* FileManager::GetBindFileNode(std::string node, std::string task_type)
 }
 
 
-void FileManager::TraversePath(std::string path,std::string pack)
+void FileManager::TraversePath(std::string path,std::string pack,int id)
 {
 	std::vector<std::string> mapFiles;
 	const std::filesystem::path rootPath(path);
@@ -248,3 +247,5 @@ void FileManager::TraversePath(std::string path,std::string pack)
 			}
 		}
 }
+
+

@@ -97,13 +97,18 @@ bool ContextManager::OrderReport()
     outputList.push_back("未知源节点数目"); outputList.push_back(std::to_string(exeNodesize));
     m_vecOutputs.push_back(outputList);
 
+    for (int i = 0; i < 6; ++i)
+    {
+      
+    }
+
     TaskNodeIter iter = m_mapUnknowNode.begin();
     for (; iter != m_mapUnknowNode.end(); ++iter)
     {
         std::vector < std::string >  outputList;
         outputList.reserve(10);
 
-        outputList.push_back("节点ID");
+        outputList.push_back("未知节点ID:找不到源码");
         outputList.push_back(iter->first);
         outputList.push_back(iter->second->m_strName);
         outputList.push_back(iter->second->comment);
@@ -116,7 +121,7 @@ bool ContextManager::OrderReport()
     {
         std::vector < std::string >  outputList;
         outputList.reserve(10);
-        outputList.push_back("节点Handle");
+        outputList.push_back("未知节点Handle:找不到源码");
         outputList.push_back(iter->first);
         outputList.push_back(iter->second->m_strName);
         outputList.push_back(iter->second->comment);
@@ -129,7 +134,7 @@ bool ContextManager::OrderReport()
     {
         std::vector < std::string >  outputList;
         outputList.reserve(10);
-        outputList.push_back("节点Class");
+        outputList.push_back("未知节点Class:找不到源码");
         outputList.push_back(iter->first);
         outputList.push_back(iter->second->m_strName);
         outputList.push_back(iter->second->comment);

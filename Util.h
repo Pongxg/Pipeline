@@ -52,6 +52,6 @@ void ReplaceChar(std::vector<char>& str, const char old_char, const char new_cha
 
 void ReplaceAll(std::string& str, const std::string& from,const std::string& to);
 
-
+std::string ASCII2UTF_8(std::string& strAsciiCode);
 
 std::string SanitizeString(std::string& label);

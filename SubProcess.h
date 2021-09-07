@@ -17,5 +17,7 @@ public:
 	virtual std::string GetNodeName();
 private:
 	Pipeline* m_pPipeline = NULL;
+	std::string m_strSrcName;
+	std::string m_strDestName;
 };
 

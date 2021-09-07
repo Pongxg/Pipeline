@@ -139,15 +139,23 @@ bool Pipeline::WriteReport()
         LOG(ERROR) << "WriteReport::out dot file fail:" << m_strName;
         return false;
     }
-    outFile << "strict digraph G {\n";
-    outFile << "edge [fontname=\"FangSong\"];\n"; 
-    outFile << "node [fontname=\"FangSong\"];\n";
+    std::string ascString = "strict digraph G {\n";
+    std::string uniString= ASCII2UTF_8(ascString);
+    outFile << uniString;
+    ascString = "edge [fontname=\"FangSong\"];\n";
+    uniString = ASCII2UTF_8(ascString);
+    outFile << uniString;
+    ascString = "node [fontname=\"FangSong\"];\n";
+    uniString = ASCII2UTF_8(ascString);
+    outFile << uniString;
     std::map<std::string, TaskNode*>::iterator iter = m_mapGraphNodes.begin();
     for (; iter != m_mapGraphNodes.end(); ++iter)
     {
         iter->second->WriterReport(outFile);
     }
-    outFile << "}\n";
+    ascString = "}\n";
+    uniString = ASCII2UTF_8(ascString);
+    outFile << uniString;
     outFile.close();
 
     std::string pngName = m_strName + ".png";
@@ -162,6 +170,10 @@ std::map<std::string, TaskNode*> Pipeline::GetGraph()
     return m_mapGraphNodes;
 }
 
+std::map<std::string, TaskNode*> Pipeline::GetTaskNodes()
+{
+    return m_mapTaskNodes;
+}
 
 bool Pipeline::BindNodeFile()
 {

@@ -82,6 +82,8 @@ void SubProcess::SetSourceName(std::string _node_name)
 
 void SubProcess::SetDestName(std::string _node_name)
 {
+
+
 	m_strName = _node_name;
 	std::string::size_type pos;
 	pos = _node_name.find("#");
@@ -124,7 +126,7 @@ std::string SubProcess::GetNodeName() {
 		return "";
 	}
 
-	std::string strNodeName = m_strNodeName + "__" + taskNode->GetNodeName();
+	std::string strNodeName = m_strNodeName + "__" + m_strDestName;
 
 	return strNodeName;
 }
@@ -138,7 +140,7 @@ bool SubProcess::WriterReport(std::ostream& _out, std::string _node_prefix, std:
 		LOG(ERROR) << "WriterReport:get subPipeline is NULL" << m_strName ;
 		return false;
 	}
-	std::map<std::string, TaskNode*>  taskNodes = m_pPipeline->GetGraph();
+
 
 	std::string strNodeName = m_strNodeName;
 	std::string strlabelName = m_strLabelName;
@@ -148,11 +150,39 @@ bool SubProcess::WriterReport(std::ostream& _out, std::string _node_prefix, std:
 		strNodeName = _node_prefix + "__" + m_strNodeName;
 		strlabelName = _label_prefix + "#" + m_strLabelName;
 	}
-	std::map<std::string, TaskNode*>::iterator iter = taskNodes.begin();
-	for (; iter != taskNodes.end(); ++iter)
+	if (m_strSrcName == m_strDestName)
 	{
-		iter->second->WriterReport(_out, strNodeName, strlabelName, depth + 1);
+		std::map<std::string, TaskNode*>  taskNodes = m_pPipeline->GetTaskNodes();
+		std::map<std::string, TaskNode*>::iterator iter = taskNodes.find(m_strSrcName);
+		if (iter != taskNodes.end())
+		{
+			iter->second->WriterReport(_out, strNodeName, strlabelName, depth + 1);
+		}
+
 	}
+	else
+	{
+		std::map<std::string, TaskNode*>  taskNodes = m_pPipeline->GetGraph();
+		std::map<std::string, TaskNode*>::iterator iter = taskNodes.begin();
+		for (; iter != taskNodes.end(); ++iter)
+		{
+			iter->second->WriterReport(_out, strNodeName, strlabelName, depth + 1);
+		}
+	}
+
+
+	////std::map<std::string, TaskNode*>::iterator iter = taskNodes.find(m_strDestName);
+	////if (iter != taskNodes.end()) {
+	////	iter->second->TravelReport(_out, m_strSrcName, strNodeName, strlabelName, depth + 1);
+	////}
+	//std::map<std::string, TaskNode*>::iterator iter = taskNodes.begin();
+	//	for (; iter != taskNodes.end(); ++iter)
+	//	{
+	//		iter->second->WriterReport(_out, strNodeName, strlabelName, depth + 1);
+	//	}
+
+
+	
 
 	for (int i = 0; i < m_vecChildList.size(); ++i)
 	{
@@ -163,8 +193,13 @@ bool SubProcess::WriterReport(std::ostream& _out, std::string _node_prefix, std:
 			nodeName = _node_prefix + "__" + m_vecChildList[i]->GetNodeName();
 			endName = _node_prefix + "__" + endName;
 		}
-		_out << endName << "->" << nodeName;
-		_out << ";\n";
+		std::string ascString = endName + "->" + nodeName;
+		std::string uniString = ASCII2UTF_8(ascString);
+		_out << uniString;
+
+		ascString = ";\n";
+		uniString = ASCII2UTF_8(ascString);
+		_out << uniString;
 	}
 
 	return true;

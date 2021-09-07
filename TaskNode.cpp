@@ -36,12 +36,12 @@ bool TaskNode::Init(const nlohmann::json& _json)
             retryTimes = it.value();
         if (it.key() == "comment")
         {
-            //std::string value =  it.value();
-            //std::wstring result;
-            //UTF8ToUnicode(value, result);
-            //comment=  UnicodeToAscii(result);
+            std::string value =  it.value();
+            std::wstring result;
+            UTF8ToUnicode(value, result);
+            comment=  UnicodeToAscii(result);
 
-            comment = it.value();
+ /*           comment = it.value();*/
         }
         if (it.key() == "subPipeline")
         {
@@ -141,56 +141,75 @@ std::string TaskNode::GetHandler()
 }
 
 
+
 bool TaskNode::WriterReport(std::ostream& _out, std::string _node_prefix, std::string _label_prefix, int depth)
 {
     std::string strNodeName = m_strNodeName;
     std::string strlabelName = m_strLabelName;
 
+    if (m_strNodeName == "" && m_strLabelName == "")
+    {
+        m_strNodeName = id;
+        m_strLabelName = id;
+    }
     if (depth > 0)
     {
         strNodeName = _node_prefix + "__" + m_strNodeName;
         strlabelName = _label_prefix + "#" + m_strLabelName;
     }
     bool bFinder = false;
-    std::string comment = "";
+
     if ((m_pFileNode && m_pFileNode->execPos.size() > 0) || (!m_pFileNode && m_nType == TASK_SIMPLE))
     {
-        bFinder = true;
+        m_strFillcolor = "red";
     }
-    if (comment == "" && m_pFileNode && m_pFileNode->comment != "")
+    std::string cmt = comment;
+    if (cmt == "" && m_pFileNode && m_pFileNode->comment != "")
     {
-        comment = m_pFileNode->comment;
+        cmt = m_pFileNode->comment;
     }
+    std::string ascString = strNodeName;
+    std::string uniString = ASCII2UTF_8(ascString);
+    _out << uniString;
 
+    ascString = " [";
+    uniString = ASCII2UTF_8(ascString);
+    _out << uniString;
 
-    std::string info = "ÖÐÎÄ";
-    _out << strNodeName;
-    _out << " [";
 
     if (strlabelName != "") {
-        _out << " label=\"" << strlabelName << "\n"<< info <<"\"";
+        ascString = " label=\"" + strlabelName + "\n" + cmt + "\"";
+        uniString = ASCII2UTF_8(ascString);
+        _out << uniString;
     }
-    if (!bFinder)
-    {
-        if (m_strFillcolor != "") {
-            _out << " fillcolor=\"" << m_strFillcolor << "\"";
-        }
-    }
-    else
-    {
-        _out << " fillcolor = red ";
+    if (m_strFillcolor != "") {
+     
+        ascString = " color=\"" + m_strFillcolor + "\"";
+        uniString = ASCII2UTF_8(ascString);
+        _out << uniString;
+    
     }
 
     if (m_strShape != "") {
-        _out << " shape=\"" << m_strShape << "\"";
+        ascString = " shape=\"" + m_strShape + "\"";
+        uniString = ASCII2UTF_8(ascString);
+        _out << uniString;
     }
-    if (m_strStyle != "") {
-        _out << " style=\"" << m_strStyle << "\"";
-    }
+    //if (m_strStyle != "") {
+    //    ascString = " style=\"" + m_strStyle + "\"";
+    //    uniString = ASCII2UTF_8(ascString);
+    //    _out << uniString;
+    //}
+
+    ascString = "]";
+    uniString = ASCII2UTF_8(ascString);
+    _out << uniString;
+
+    ascString = ";\n";
+    uniString = ASCII2UTF_8(ascString);
+    _out << uniString;
 
 
-    _out << "]";
-    _out << ";\n";
 
     for (int i = 0; i < m_vecChildList.size(); ++i)
     {
@@ -200,8 +219,14 @@ bool TaskNode::WriterReport(std::ostream& _out, std::string _node_prefix, std::s
         {
             nodeName = _node_prefix + "__" + m_vecChildList[i]->GetNodeName();
         }
-        _out << strNodeName << "->"<< nodeName;
-        _out << ";\n";
+
+        ascString = strNodeName + "->" + nodeName;
+        uniString = ASCII2UTF_8(ascString);
+        _out << uniString;
+
+        ascString = ";\n";
+        uniString = ASCII2UTF_8(ascString);
+        _out << uniString;
     }
 
     return true;

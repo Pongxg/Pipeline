@@ -12,6 +12,7 @@ public:
 	bool FindNodeHandler(std::string name, std::string& _handle_name);
 	bool WriteReport();
 	std::map<std::string, TaskNode*> GetGraph();
+	std::map<std::string, TaskNode*> GetTaskNodes();
 	bool BindNodeFile();
 
 	bool TraverNodeFile();
